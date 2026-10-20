@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: Prompt injection guard. Blocks injected prompts and raises a ServiceNow incident.
 servers:
-  - url: https://pi-guard.2g3h3zd1uf25.au-syd.codeengine.appdomain.cloud
+  - url: https://<your-app>.<hash>.au-syd.codeengine.appdomain.cloud  # replace with your Code Engine URL (docs: Part B6)
 paths:
   /agent_pre_invoke:
     post:

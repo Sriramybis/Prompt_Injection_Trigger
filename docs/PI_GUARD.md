@@ -45,7 +45,7 @@ service is the server URL inside the OpenAPI tool `pi_guard_pre`.
 | Control artifact | `pi_guard_artifact_v2` | Wraps the tool as a custom control. Registered by [`scripts/register_control_artifact.py`](../scripts/register_control_artifact.py) |
 | Control | `pi_guard_control` | Binds the artifact to the agent on `agent_pre_invoke`, priority 50 |
 | Agent | [`agents/pi_guard_test_agent.yaml`](../agents/pi_guard_test_agent.yaml) | Sandbox agent (`react_core`, `groq/openai/gpt-oss-120b`) |
-| Code Engine app | `pi-guard` in project `itz-codeengine-6960005cb8` (au-syd) | Hosts the service, public HTTPS URL |
+| Code Engine app | `pi-guard` in project `<project name>` (au-syd) | Hosts the service, public HTTPS URL |
 | Code Engine secret | `pi-guard-env` | ServiceNow and wxO credentials, injected as environment variables |
 | ServiceNow user | `pi_guard_test_agent` | Lets the incident's `caller_id` point at the agent |
 | ServiceNow service account | `pi_trigger_svc` | Creates incidents through REST (roles `itil`, `snc_basic_auth_api_access`) |
@@ -108,7 +108,7 @@ sequenceDiagram
     participant C as Control<br/>pi_guard_control
     participant S as Code Engine app<br/>pi-guard (FastAPI)
     participant I as IBM IAM / wxO API
-    participant SN as ServiceNow<br/>dev394116
+    participant SN as ServiceNow<br/>PDI
 
     U->>W: message
     W->>C: agent_pre_invoke
@@ -227,7 +227,7 @@ A project is the Code Engine workspace that holds apps, secrets and builds.
 ```bash
 ibmcloud ce project list
 ibmcloud ce project create -n pi-guard-project     # only if you need a new one
-ibmcloud ce project select -n <project name>        # this deployment: itz-codeengine-6960005cb8
+ibmcloud ce project select -n <project name>      
 ```
 
 #### B4. Store the credentials as a secret
@@ -274,13 +274,13 @@ Code Engine gives the app a public HTTPS endpoint with a certificate. There is n
 ibmcloud ce app get -n pi-guard          # URL line
 ```
 
-This deployment: `https://pi-guard.2g3h3zd1uf25.au-syd.codeengine.appdomain.cloud`.
+Example: `https://<your-app>.<hash>.au-syd.codeengine.appdomain.cloud`.
 The URL is stable across restarts and redeploys.
 
 #### B7. Test the deployed service
 
 ```bash
-U=https://pi-guard.2g3h3zd1uf25.au-syd.codeengine.appdomain.cloud
+U=https://<your-app>.<hash>.au-syd.codeengine.appdomain.cloud
 curl $U/health                                      # {"status":"ok","threshold":3}
 
 curl -X POST $U/agent_pre_invoke -H 'Content-Type: application/json' \
@@ -452,7 +452,7 @@ These show the limits of a rule-based detector. They are useful for a "what's ne
 ### 5.4 Where to see the result
 
 - ServiceNow list:
-  `https://dev394116.service-now.com/incident_list.do?sysparm_query=short_descriptionLIKEPI-Guard^ORDERBYDESCsys_created_on`
+  `https://<instance>.service-now.com/incident_list.do?sysparm_query=short_descriptionLIKEPI-Guard^ORDERBYDESCsys_created_on`
 - CLI: `./scripts/show_tickets.sh 5`
 - Guard log: `ibmcloud ce app logs -n pi-guard --tail 50` (look for `[PI-GUARD] BLOCKED agent=… score=… incident=INC…`)
 

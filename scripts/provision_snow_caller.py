@@ -4,7 +4,7 @@ The incident caller_id field is a reference to sys_user, so each agent that
 should appear as a caller needs a user whose user_name equals the agent name.
 Creating users needs an admin session, which the pi_trigger_svc account lacks.
 
-Usage:
+Usage (needs SERVICENOW_URL in the environment):
   SN_ADMIN_USER=admin SN_ADMIN_PASSWORD=... \
     .venv/bin/python scripts/provision_snow_caller.py pi_guard_test_agent "PI Guard Test Agent"
 """
@@ -14,7 +14,7 @@ import sys
 
 import requests
 
-BASE = os.environ.get("SERVICENOW_URL", "https://dev394116.service-now.com").rstrip("/")
+BASE = os.environ["SERVICENOW_URL"].rstrip("/")
 
 
 def main(user_name: str, display: str) -> int:
