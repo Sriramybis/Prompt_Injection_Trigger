@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: PI Guard Plug-in
+  version: 1.0.0
+  description: Prompt injection guard. Blocks injected prompts and raises a ServiceNow incident.
+servers:
+  - url: https://pi-guard.2g3h3zd1uf25.au-syd.codeengine.appdomain.cloud
+paths:
+  /agent_pre_invoke:
+    post:
+      operationId: pi_guard_pre
+      summary: Pre-invoke prompt injection guard
+      description: Blocks the request and raises a ServiceNow incident when the user message looks like a prompt injection.
+      x-ibm-orchestrate-plugin:
+        hook: agent_pre_invoke
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [payload, context]
+              properties:
+                payload: { type: object }
+                context: { type: object }
+      responses:
+        "200":
+          description: Plug-in result
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [continue_processing]
+                properties:
+                  continue_processing: { type: boolean }
+                  modified_payload: { type: object }

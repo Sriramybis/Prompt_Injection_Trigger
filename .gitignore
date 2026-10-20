@@ -1,0 +1,12 @@
+# secrets
+.env
+secrets.txt
+
+# environments and caches
+.venv/
+__pycache__/
+*.pyc
+.vscode/
+
+# local exports of other agents
+export/

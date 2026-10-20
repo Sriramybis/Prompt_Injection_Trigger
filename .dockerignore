@@ -1,0 +1,7 @@
+.venv
+.env
+secrets.txt
+export
+tests
+docs
+__pycache__
